@@ -71,7 +71,7 @@
   - name: Start and enable Grafana service
     become: true
     service:
-      name: "{{ grafana_package_name }}"
+      name: grafana-server
       state: "{{ grafana_service_state }}"
       enabled: "{{ grafana_service_enabled }}"
     tags: [grafana_install]
