@@ -1,0 +1,61 @@
+# - name: Download OTel Collector binary
+#   get_url:
+#     url: "https://github.com/open-telemetry/opentelemetry-collector-releases/releases/download/v{{ otel_collector_version }}/otelcol_{{ otel_collector_version }}_linux_amd64.tar.gz"
+#     dest: /tmp/otel_collector.tar.gz
+
+# - name: Extract OTel Collector binary
+#   unarchive:
+#     src: /tmp/otel_collector.tar.gz
+#     dest: /opt/otel
+#     remote_src: yes
+
+# - name: Create OTel systemd service
+#   copy:
+#     dest: /etc/systemd/system/otel-collector.service
+#     content: |
+#       [Unit]
+#       Description=OpenTelemetry Collector
+#       After=network.target
+
+#       [Service]
+#       ExecStart=/opt/otel/otelcol --config /opt/otel/config.yaml
+#       Restart=on-failure
+
+#       [Install]
+#       WantedBy=multi-user.target
+
+# - name: Enable and start OTel Collector service
+#   systemd:
+#     name: otel-collector
+#     # state: started
+#     enabled: yes
+
+---
+- name: Add Grafana repository key
+  assible.builtin.apt_key:
+    url: "{{ grafana_repo_key }}"
+    state: present
+  tags: [otel_install]
+
+- name: Add Grafana repository
+  ansible.builtin.apt_repository:
+    repo: "deb [signed-by={{ grafana_repo_key | urlsplit('path').split('/')[-1] }}] {{ grafana_repo_url }}"
+    state: present
+    update_cache: yes
+  tags: [otel_install]
+
+- name: Install Grafana
+  become: true
+  apt:
+    name: "{{ grafana_package_name }}={{ grafana_version }}*"
+    state: present
+    update_cache: yes
+  tags: [otel_install]
+
+- name: Start and enable Grafana service
+  become: true
+  service:
+    name: "{{ grafana_package_name }}"
+    state: "{{ grafana_service_state }}"
+    enabled: "{{ grafana_service_enabled }}"
+  tags: [otel_install]

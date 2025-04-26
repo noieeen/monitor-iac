@@ -1,0 +1,60 @@
+clickhouse_version: "24.5.1.117"
+clickhouse_release_type: lts  # Values should be: stable, lts or testing
+clickhouse_install_db: True
+clickhouse_install_bridge: False
+clickhouse_packages:
+  - clickhouse-server
+  - clickhouse-client
+# Clickhouse role management
+clickhouse_role_manage_users: False
+clickhouse_role_manage_roles: False
+clickhouse_role_manage_databases: False
+clickhouse_role_manage_settings_profiles: False
+clickhouse_role_manage_quotas: False
+clickhouse_role_manage_grants: False
+
+## Service options
+# Documentation
+clickhouse_documentation_link: https://clickhouse.tech/docs/en/
+clickhouse_environment_file: /etc/default/clickhouse
+
+# Set to restart-clickhouse if you need a complete restart of the service i.e. changing listeners config
+clickhouse_handler_on_config_change: "Restart-clickhouse"
+
+# Owner
+clickhouse_user: clickhouse
+clickhouse_group: clickhouse
+
+# Maximum number of files limit
+clickhouse_max_files: 32768
+
+# Start on boot
+clickhouse_service_enabled: True
+# Current state: started, stopped
+clickhouse_service_state: started
+
+# Directories
+# clickhouse_base_path: "/var/lib/clickhouse" **use clickhouse_data_dir
+clickhouse_base_directory_mode: 0700
+clickhouse_config_path: /etc/clickhouse-server/config.d
+clickhouse_data_dir: /var/lib/clickhouse
+clickhouse_log_dir: /var/log/clickhouse-server
+
+# Grafana
+grafana_version: "11.6"
+grafana_package_name: grafana
+grafana_install_method: repo
+grafana_repo_url: "https://apt.grafana.com stable main"
+grafana_repo_key: "https://apt.grafana.com/gpg.key"
+grafana_service_state: started
+grafana_service_enabled: true
+
+# OpenTelemetry Collector
+otel_version: "0.97.0"
+otel_package_name: opentelemetry-collector
+otel_config_path: /etc/otel-collector/config.yaml
+otel_service_state: started
+otel_service_enabled: true
+otel_collector_ports:
+  grpc: 4317
+  http: 4318

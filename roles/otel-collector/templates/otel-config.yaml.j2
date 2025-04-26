@@ -1,0 +1,33 @@
+receivers:
+  otlp:
+    protocols:
+      grpc:
+        endpoint: 0.0.0.0:{{ otel_collector_ports.grpc }}
+      http:
+        endpoint: 0.0.0.0:{{ otel_collector_ports.http }}
+
+processors:
+  batch:
+
+exporters:
+  clickhouse:
+    endpoint: "http://127.0.0.1:8123"
+    database: default
+    traces_table: otel_traces
+    metrics_table: otel_metrics
+    logs_table: otel_logs
+
+service:
+  pipelines:
+    traces:
+      receivers: [otlp]
+      processors: [batch]
+      exporters: [clickhouse]
+    metrics:
+      receivers: [otlp]
+      processors: [batch]
+      exporters: [clickhouse]
+    logs:
+      receivers: [otlp]
+      processors: [batch]
+      exporters: [clickhouse]

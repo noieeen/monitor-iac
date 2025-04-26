@@ -1,0 +1,11 @@
+---
+- name: Deploy Monitorstack (ClickHouse, OTel, Grafana)
+  hosts: prod
+  become: true
+  vars_files:
+    - ../inventory/vault.yml
+    - ../inventory/group_vars/all.yml
+  roles:
+    - clickhouse
+    - otel-collector
+    - grafana

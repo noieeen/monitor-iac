@@ -1,0 +1,77 @@
+# - name: Install denpendencies
+#   apt:
+#     name: apt-transport-https
+#     state: present
+
+# - name: Add Grafana APT repository
+#   apt_repository:
+#     repo: deb https://packages.grafana.com/oss/release/deb stable main
+#     state: present
+#     filename: grafana
+#     update_cache: yes
+
+# - name: Install Grafana
+#   apt:
+#     name: grafana={{ grafana_version }}
+#     state: present
+
+# - name: Enable and Start Grafana service
+#   service:
+#     name: grafana-server
+#     state: started
+#     enabled: yes
+
+
+---
+# Ensure necessary dependencies is installed
+  - name: Ensure software-properties-common is installed
+    become: true
+    apt:
+      name: software-properties-common
+      state: present
+      update_cache: yes
+
+  - name: Ensure wget is installed
+    become: true
+    apt:
+      name: wget
+      state: present
+      update_cache: yes
+
+  - name: Ensure apt-transport-https is installed
+    become: true
+    apt:
+      name: apt-transport-https
+      state: present
+      update_cache: yes
+
+############## End Dependencies ######################
+
+  - name: Add Grafana repository key
+    ansible.builtin.apt_key:
+      url: "{{ grafana_repo_key }}"
+      state: present
+    tags: [grafana_install]
+
+  - name: Add Grafana repository
+    ansible.builtin.apt_repository:
+      repo: "deb [arch=amd64] {{ grafana_repo_url }}"
+      state: present
+      update_cache: yes
+    tags: [grafana_install]
+
+  - name: Install Grafana
+    become: true
+    apt:
+      name: "{{ grafana_package_name }}={{ grafana_version }}*"
+      state: present
+      update_cache: yes
+    tags: [grafana_install]
+
+  - name: Start and enable Grafana service
+    become: true
+    service:
+      name: "{{ grafana_package_name }}"
+      state: "{{ grafana_service_state }}"
+      enabled: "{{ grafana_service_enabled }}"
+    tags: [grafana_install]

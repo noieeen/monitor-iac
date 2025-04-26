@@ -1,0 +1,2 @@
+# run ansible
+ansible-playbook -i inventory/hosts.ini playbooks/setup-monitoring.yml --ask-vault-pass
