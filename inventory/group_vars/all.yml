@@ -58,34 +58,35 @@ grafana_service_enabled: true
 # otel_collector_ports:
 #   grpc: 4317
 #   http: 4318
-otel_collector_version: "0.97.0"  # Specify a version or use "latest"
-otel_collector_service_name: "otel-collector"
-otel_collector_user: "otelcol"
-otel_collector_group: "otelcol"
+otel_version: "0.124.0" # Specify a version or use "latest"
+otel_config_dir: "/etc/otel-collector" 
+otel_service_name: "otel-collector"
+otel_user: "otel"
+otel_group: "otel"
 
-otel_collector_receivers:
-  otlp:
-    protocols:
-      grpc:
-        endpoint: 0.0.0.0:4317
-      http:
-        endpoint: 0.0.0.0:4318
-  hostmetrics:
-    collection_interval: 10s
+# otel_collector_receivers:
+#   otlp:
+#     protocols:
+#       grpc:
+#         endpoint: 0.0.0.0:4317
+#       http:
+#         endpoint: 0.0.0.0:4318
+#   hostmetrics:
+#     collection_interval: 10s
 
-otel_collector_processors:
-  batch:
-    timeout: 5s
+# otel_collector_processors:
+#   batch:
+#     timeout: 5s
 
-otel_collector_exporters:
-  logging:
-    loglevel: info
-  prometheus:
-    endpoint: localhost:9090
+# otel_collector_exporters:
+#   logging:
+#     loglevel: info
+#   prometheus:
+#     endpoint: localhost:9090
 
-otel_collector_extensions:
-  health_check: {}
-  pprof:
-    endpoint: localhost:1777
-  zpages:
-    endpoint: localhost:55679
+# otel_collector_extensions:
+#   health_check: {}
+#   pprof:
+#     endpoint: localhost:1777
+#   zpages:
+#     endpoint: localhost:55679

@@ -6,6 +6,7 @@
     - ../inventory/vault.yml
     - ../inventory/group_vars/all.yml
   roles:
-    - clickhouse
+    - require-deps
+    # - clickhouse
     - otel-collector
-    - grafana
+    # - grafana

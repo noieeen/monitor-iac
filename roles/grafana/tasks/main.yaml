@@ -23,30 +23,6 @@
 
 
 ---
-# Ensure necessary dependencies is installed
-  - name: Ensure software-properties-common is installed
-    become: true
-    apt:
-      name: software-properties-common
-      state: present
-      update_cache: yes
-
-  - name: Ensure wget is installed
-    become: true
-    apt:
-      name: wget
-      state: present
-      update_cache: yes
-
-  - name: Ensure apt-transport-https is installed
-    become: true
-    apt:
-      name: apt-transport-https
-      state: present
-      update_cache: yes
-
-############## End Dependencies ######################
-
   - name: Add Grafana repository key
     ansible.builtin.apt_key:
       url: "{{ grafana_repo_key }}"
@@ -75,3 +51,32 @@
       state: "{{ grafana_service_state }}"
       enabled: "{{ grafana_service_enabled }}"
     tags: [grafana_install]
+
+  # --- Grafana provisioning automation ---
+  - name: Create Grafana provisioning directories
+    become: true
+    file:
+      path: /etc/grafana/provisioning/datasources
+      state: directory
+      mode: '0755'
+
+  - name: Provision ClickHouse datasource
+    become: true
+    copy:
+      dest: /etc/grafana/provisioning/datasources/clickhouse-datasource.yml
+      content: |
+        apiVersion: 1
+        datasources:
+          - name: ClickHouse
+            type: vertamedia-clickhouse-datasource
+            access: proxy
+            url: http://localhost:8123
+            basicAuth: false
+            isDefault: true
+            editable: true
+
+  - name: Restart Grafana service after provisioning
+    become: true
+    service:
+      name: grafana-server
+      state: restarted

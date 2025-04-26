@@ -46,29 +46,6 @@
       mode: "{{ clickhouse_base_directory_mode }}"
     become: true
     tags: [clickhouse_install]
-# Ensure necessary dependencies is installed
-  - name: Ensure gpg is installed
-    become: true
-    apt:
-      name: gpg
-      state: present
-      update_cache: yes
-
-  - name: Ensure curl is installed
-    become: true
-    apt:
-      name: curl
-      state: present
-      update_cache: yes
-
-  - name: Ensure apt-transport-https is installed
-    become: true
-    apt:
-      name: apt-transport-https
-      state: present
-      update_cache: yes
-
-############## End Dependencies ######################
 
   - name: Add ClickHouse repository key
     ansible.builtin.apt_key:
