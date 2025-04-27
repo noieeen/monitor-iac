@@ -5,6 +5,7 @@ clickhouse_install_bridge: False
 clickhouse_packages:
   - clickhouse-server
   - clickhouse-client
+
 # Clickhouse role management
 clickhouse_role_manage_users: False
 clickhouse_role_manage_roles: False
@@ -18,6 +19,7 @@ clickhouse_role_manage_grants: False
 clickhouse_documentation_link: https://clickhouse.tech/docs/en/
 clickhouse_environment_file: /etc/default/clickhouse
 
+clickhouse_listen_host: "127.0.0.1"
 # Set to restart-clickhouse if you need a complete restart of the service i.e. changing listeners config
 clickhouse_handler_on_config_change: "Restart-clickhouse"
 

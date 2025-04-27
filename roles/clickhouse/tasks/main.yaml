@@ -1,117 +1,95 @@
-# - name: Add ClickHouse APT repository
-#   apt_key:
-#     url: https://repo.clickhouse.tech/rpm/stable/x86_64/repodata/repomd.xml.key
-#     state: present
-
-# - apt_repository:
-#     repo: deb https://repo.clickhouse.tech/rpm/stable/x86_64/ main/
-#     state: present
-
-# - name: Install ClickHouse
-#   apt:
-#     name:
-#       - clickhouse-server={{ clickhouse_version }}
-#       - clickhouse-client={{ clickhouse_version }}
-#     update_cache: present
-
-# - name: Enable and Start ClickHouse service
-#   service:
-#     name: clickhouse-server
-#     state: started
-#     enabled: yes
-
 ---
-  - name: CLICKHOUSE | Ensure clickhouse group
-    ansible.builtin.group:
-      name: "{{ clickhouse_group }}"
-      system: yes
-      state: present
-    tags: [clickhouse_install]
+- name: CLICKHOUSE | Ensure clickhouse group
+  ansible.builtin.group:
+    name: "{{ clickhouse_group }}"
+    system: yes
+    state: present
+  tags: [clickhouse_install]
 
-  - name: CLICKHOUSE | Ensure clickhouse user
-    ansible.builtin.user:
-      name: "{{ clickhouse_user }}"
-      group: "{{ clickhouse_group }}"
-      system: yes
-      shell: /usr/sbin/nologin
-      createhome: no
-    tags: [clickhouse_install]
+- name: CLICKHOUSE | Ensure clickhouse user
+  ansible.builtin.user:
+    name: "{{ clickhouse_user }}"
+    group: "{{ clickhouse_group }}"
+    system: yes
+    shell: /usr/sbin/nologin
+    createhome: no
+  tags: [clickhouse_install]
 
-  - name: CLICKHOUSE | Ensure base directory exist
-    ansible.builtin.file:
-      state: directory
-      dest: "{{ clickhouse_data_dir }}"
-      owner: "{{ clickhouse_user }}"
-      group: "{{ clickhouse_group }}"
-      mode: "{{ clickhouse_base_directory_mode }}"
-    become: true
-    tags: [clickhouse_install]
+- name: CLICKHOUSE | Ensure base directory exist
+  ansible.builtin.file:
+    state: directory
+    dest: "{{ clickhouse_data_dir }}"
+    owner: "{{ clickhouse_user }}"
+    group: "{{ clickhouse_group }}"
+    mode: "{{ clickhouse_base_directory_mode }}"
+  become: true
+  tags: [clickhouse_install]
 
-  - name: Add ClickHouse repository key
-    ansible.builtin.apt_key:
-      url: "https://packages.clickhouse.com/rpm/lts/repodata/repomd.xml.key"
-      state: present
-    tags: [clickhouse_install]
+- name: Add ClickHouse repository key
+  ansible.builtin.apt_key:
+    url: "https://packages.clickhouse.com/rpm/lts/repodata/repomd.xml.key"
+    state: present
+  tags: [clickhouse_install]
 
-  - name: Add ClickHouse repository
-    ansible.builtin.apt_repository:
-      repo: "deb [arch=amd64] https://packages.clickhouse.com/deb stable main"
-      state: present
-      update_cache: yes
-    tags: [clickhouse_install]
+- name: Add ClickHouse repository
+  ansible.builtin.apt_repository:
+    repo: "deb [arch=amd64] https://packages.clickhouse.com/deb stable main"
+    state: present
+    update_cache: yes
+  tags: [clickhouse_install]
 
-  - name: Install ClickHouse server and client
-    ansible.builtin.apt:
-      name: "{{ clickhouse_packages }}"
-      state: present
-      update_cache: yes
-    tags: [clickhouse_install]
+- name: Install ClickHouse server and client
+  ansible.builtin.apt:
+    name: "{{ clickhouse_packages }}"
+    state: present
+    update_cache: yes
+  tags: [clickhouse_install]
 
-  - name: Create ClickHouse configuration directory
-    become: true
-    file:
-      path: "{{ clickhouse_config_path }}"
-      state: directory
-      owner: clickhouse
-      group: clickhouse
-      mode: "0755"
-    tags: [clickhouse_install]
+- name: Create ClickHouse configuration directory
+  become: true
+  file:
+    path: "{{ clickhouse_config_path }}"
+    state: directory
+    owner: clickhouse
+    group: clickhouse
+    mode: "0755"
+  tags: [clickhouse_install]
 
-  - name: Deploy ClickHouse configuration
-    become: true
-    template:
-      src: clickhouse-config.xml.j2
-      dest: "{{ clickhouse_config_path }}/config.xml"
-      owner: clickhouse
-      group: clickhouse
-      mode: "0644"
-    notify: Restart clickhouse-server
-    tags: [clickhouse_install]
+- name: Deploy ClickHouse configuration
+  become: true
+  template:
+    src: clickhouse-config.xml.j2
+    dest: "{{ clickhouse_config_path }}/config.xml"
+    owner: clickhouse
+    group: clickhouse
+    mode: "0644"
+  notify: Restart clickhouse-server
+  tags: [clickhouse_install]
 
-  - name: Ensure ClickHouse data directory exists
-    become: true
-    file:
-      path: "{{ clickhouse_data_dir }}"
-      state: directory
-      owner: clickhouse
-      group: clickhouse
-      mode: "0755"
-    tags: [clickhouse_install]
+- name: Ensure ClickHouse data directory exists
+  become: true
+  file:
+    path: "{{ clickhouse_data_dir }}"
+    state: directory
+    owner: clickhouse
+    group: clickhouse
+    mode: "0755"
+  tags: [clickhouse_install]
 
-  - name: Ensure ClickHouse log directory exists
-    become: true
-    file:
-      path: "{{ clickhouse_log_dir }}"
-      state: directory
-      owner: clickhouse
-      group: clickhouse
-      mode: "0755"
-    tags: [clickhouse_install]
+- name: Ensure ClickHouse log directory exists
+  become: true
+  file:
+    path: "{{ clickhouse_log_dir }}"
+    state: directory
+    owner: clickhouse
+    group: clickhouse
+    mode: "0755"
+  tags: [clickhouse_install]
 
-  - name: Start and enable ClickHouse service
-    become: true
-    service:
-      name: clickhouse-server
-      state: started
-      enabled: true
-    tags: [clickhouse_install]
+- name: Start and enable ClickHouse service
+  become: true
+  service:
+    name: clickhouse-server
+    state: started
+    enabled: true
+  tags: [clickhouse_install]
