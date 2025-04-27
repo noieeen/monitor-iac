@@ -1,5 +1,5 @@
 ---
-  - name: restart otel-collector
+  - name: restart otel-contrib
     service:
       name: "{{ otel_service_name }}"
       state: restarted

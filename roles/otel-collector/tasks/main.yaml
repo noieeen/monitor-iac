@@ -65,21 +65,21 @@
   tags: [otel_install]
 
 
-# # Copy OpenTelemetry config file
-# - name: Configure OpenTelemetry with ClickHouse exporter
-#   become: true
-#   template:
-#     src: ./config/otel-config.yaml.j2
-#     dest: "{{ otel_config_dir }}/config.yaml"
-#     mode: "0644"
-#   notify: restart otel-collector
-#   tags: [otel_install]
+# Copy OpenTelemetry config file
+- name: Configure OpenTelemetry with ClickHouse exporter
+  become: true
+  template:
+    src: ./config/otel-config.yaml.j2
+    dest: "{{ otel_config_dir }}/config.yaml"
+    mode: "0644"
+  notify: restart otel-contrib # Trigger handler to restart the service
+  tags: [otel_install]
 
 # # Create systemd service
 # - name: Create OpenTelemetry systemd service
 #   template:
 #     src: ./config/otel-collector.service.j2
-#     dest: "/etc/systemd/system/{{ otel_service_name }}.service"
+#     dest: "/usr/lib/systemd/system/{{ otel_service_name }}.service"
 #     mode: "0644"
 #   tags: [otel_install]
 
