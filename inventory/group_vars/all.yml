@@ -58,9 +58,9 @@ grafana_service_enabled: true
 # otel_collector_ports:
 #   grpc: 4317
 #   http: 4318
-otel_version: "0.124.0" # Specify a version or use "latest"
-otel_config_dir: "/etc/otel-collector" 
-otel_service_name: "otel-collector"
+otel_version: "0.124.1" # Specify a version or use "latest"
+otel_config_dir: "/etc/otelcol-contrib" 
+otel_service_name: "otelcol-contrib"
 otel_user: "otel"
 otel_group: "otel"
 
