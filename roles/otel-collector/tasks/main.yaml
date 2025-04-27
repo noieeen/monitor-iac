@@ -75,13 +75,13 @@
   notify: restart otel-contrib # Trigger handler to restart the service
   tags: [otel_install]
 
-# # Create systemd service
-# - name: Create OpenTelemetry systemd service
-#   template:
-#     src: ./config/otel-collector.service.j2
-#     dest: "/usr/lib/systemd/system/{{ otel_service_name }}.service"
-#     mode: "0644"
-#   tags: [otel_install]
+# Create systemd service
+- name: Create OpenTelemetry systemd service
+  template:
+    src: ./config/otel-collector.service.j2
+    dest: "/usr/lib/systemd/system/{{ otel_service_name }}.service"
+    mode: "0644"
+  tags: [otel_install]
 
 - name: Reload systemd
   become: true
