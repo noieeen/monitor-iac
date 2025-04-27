@@ -1,4 +1,13 @@
 <clickhouse>
+
+    <startup-script>
+        <scripts>
+            <query>CREATE DATABASE IF NOT EXISTS default</query>
+        </scripts>
+        <scripts>
+            <query>CREATE DATABASE IF NOT EXISTS otel</query>
+        </scripts>
+    </startup-script>
     <listen_host>{{ clickhouse_listen_host }}</listen_host>
     <tcp_port>9000</tcp_port>
 
@@ -15,11 +24,13 @@
         <errorlog>{{ clickhouse_log_dir }}/clickhouse-server.err.log</errorlog>
         <size>1000M</size>
         <count>10</count>
-        <level>information</level> </logger>
+        <level>information</level>
+    </logger>
 
     <profiles>
         <default>
-            <max_memory_usage>10000000000</max_memory_usage> <load_balancing>random</load_balancing>
+            <max_memory_usage>10000000000</max_memory_usage>
+            <load_balancing>random</load_balancing>
         </default>
     </profiles>
 
@@ -27,11 +38,12 @@
         <default>
             <profile>default</profile>
             <networks>
-                <ip>::/0</ip> </networks>
+                <ip>::/0</ip>
+            </networks>
             <quota>default</quota>
         </default>
 
-        </users>
+    </users>
 
     <quotas>
         <default>
