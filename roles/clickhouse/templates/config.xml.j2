@@ -1,13 +1,4 @@
 <clickhouse>
-
-    <startup-script>
-        <scripts>
-            <query>CREATE DATABASE IF NOT EXISTS default</query>
-        </scripts>
-        <scripts>
-            <query>CREATE DATABASE IF NOT EXISTS otel</query>
-        </scripts>
-    </startup-script>
     <listen_host>{{ clickhouse_listen_host }}</listen_host>
     <tcp_port>9000</tcp_port>
 

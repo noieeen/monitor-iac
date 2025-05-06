@@ -27,13 +27,13 @@
 
 - name: Add ClickHouse repository key
   ansible.builtin.apt_key:
-    url: "https://packages.clickhouse.com/rpm/lts/repodata/repomd.xml.key"
+    url: "{{ clickhouse_key_url }}"
     state: present
   tags: [clickhouse_install]
 
 - name: Add ClickHouse repository
   ansible.builtin.apt_repository:
-    repo: "deb [arch=amd64] https://packages.clickhouse.com/deb stable main"
+    repo: "{{ clickhouse_deb_repo }}"
     state: present
     update_cache: yes
   tags: [clickhouse_install]
@@ -56,6 +56,17 @@
   tags: [clickhouse_install]
 
 - name: Deploy ClickHouse configuration
+  become: true
+  template:
+    src: clickhouse-config.xml.j2
+    dest: "{{ clickhouse_config_path }}/config.xml"
+    owner: clickhouse
+    group: clickhouse
+    mode: "0644"
+  notify: Restart clickhouse-server
+  tags: [clickhouse_install]
+
+- name: Deploy ClickHouse user configuration
   become: true
   template:
     src: clickhouse-config.xml.j2

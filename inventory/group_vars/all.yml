@@ -1,10 +1,17 @@
-clickhouse_version: "24.5.1.117"
-clickhouse_release_type: lts  # Values should be: stable, lts or testing
+##### Start Clickhouse Variables #####
+clickhouse_service: "clickhouse-server"
+clickhouse_version: "25.3.3.42"
+clickhouse_release_type: lts # Values should be: stable, lts or testing
+clickhouse_package_arch: "[arch=amd64]"
+
+clickhouse_key_url: "https://packages.clickhouse.com/rpm/lts/repodata/repomd.xml.key"
+clickhouse_deb_repo: "deb {{ clickhouse_package_arch }} https://packages.clickhouse.com/deb {{ clickhouse_release_type }} main"
 clickhouse_install_db: True
 clickhouse_install_bridge: False
+
 clickhouse_packages:
-  - clickhouse-server
-  - clickhouse-client
+  - clickhouse-server={{ clickhouse_version }}
+  - clickhouse-client={{ clickhouse_version }}
 
 # Clickhouse role management
 clickhouse_role_manage_users: False
@@ -35,6 +42,11 @@ clickhouse_service_enabled: True
 # Current state: started, stopped
 clickhouse_service_state: started
 
+# Config templates
+clickhouse_service_template_path: clickhouse-server.service.j2
+clickhouse_config_file_name: config.xml
+clickhouse_users_file_name: users.xml
+
 # Directories
 # clickhouse_base_path: "/var/lib/clickhouse" **use clickhouse_data_dir
 clickhouse_base_directory_mode: 0700
@@ -42,7 +54,18 @@ clickhouse_config_path: /etc/clickhouse-server/config.d
 clickhouse_data_dir: /var/lib/clickhouse
 clickhouse_log_dir: /var/log/clickhouse-server
 
-# Grafana
+# Logs
+clickhouse_logger:
+  level: trace
+  log: "{{ clickhouse_log_directory }}/clickhouse-server.log"
+  errorlog: "{{ clickhouse_log_directory }}/clickhouse-server.err.log"
+  size: 1000M
+  count: 10
+  console: autodetection
+
+##### End Clickhouse Variables #####
+
+##### Start Grafana Variables #####
 grafana_version: "11.6"
 grafana_package_name: grafana
 grafana_install_method: repo
@@ -50,7 +73,9 @@ grafana_repo_url: "https://apt.grafana.com stable main"
 grafana_repo_key: "https://apt.grafana.com/gpg.key"
 grafana_service_state: started
 grafana_service_enabled: true
+##### End Grafana Variables #####
 
+##### Start Otel Variables #####
 # OpenTelemetry Collector
 # otel_version: "0.97.0"
 # otel_package_name: opentelemetry-collector
@@ -61,34 +86,8 @@ grafana_service_enabled: true
 #   grpc: 4317
 #   http: 4318
 otel_version: "0.124.1" # Specify a version or use "latest"
-otel_config_dir: "/etc/otelcol-contrib" 
 otel_service_name: "otelcol-contrib"
+otel_config_dir: "/etc/{{ otel_service_name }}"
 otel_user: "otel"
 otel_group: "otel"
-
-# otel_collector_receivers:
-#   otlp:
-#     protocols:
-#       grpc:
-#         endpoint: 0.0.0.0:4317
-#       http:
-#         endpoint: 0.0.0.0:4318
-#   hostmetrics:
-#     collection_interval: 10s
-
-# otel_collector_processors:
-#   batch:
-#     timeout: 5s
-
-# otel_collector_exporters:
-#   logging:
-#     loglevel: info
-#   prometheus:
-#     endpoint: localhost:9090
-
-# otel_collector_extensions:
-#   health_check: {}
-#   pprof:
-#     endpoint: localhost:1777
-#   zpages:
-#     endpoint: localhost:55679
+##### End Otel Variables #####

@@ -1,6 +1,15 @@
 ---
-  - name: Restart clickhouse-server
-    become: true
-    service:
-      name: clickhouse-server
-      state: restarted
+# - name: Restart clickhouse-server
+#   become: true
+#   service:
+#     name: clickhouse-server
+#     state: restarted
+- name: Restart-clickhouse
+  systemd:
+    name: "{{ clickhouse_service }}"
+    state: restarted
+
+- name: Reload-clickhouse
+  systemd:
+    name: "{{ clickhouse_service }}"
+    state: reloaded

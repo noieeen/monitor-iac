@@ -1,0 +1,10 @@
+---
+
+- name: CLICKHOUSE | Copy systemd unit configuration file
+  ansible.builtin.template:
+    src: "{{ clickhouse_service_template_path }}"
+    dest: "/etc/systemd/system/{{ clickhouse_service }}.service"
+    mode: 0644
+    owner: root
+    group: root
+  notify: Reload-clickhouse
