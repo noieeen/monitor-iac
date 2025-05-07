@@ -58,24 +58,24 @@
 - name: Deploy ClickHouse configuration
   become: true
   template:
-    src: clickhouse-config.xml.j2
+    src: config.xml.j2
     dest: "{{ clickhouse_config_path }}/config.xml"
     owner: clickhouse
     group: clickhouse
     mode: "0644"
-  notify: Restart clickhouse-server
+  notify: "{{ clickhouse_handler_on_config_change }}"
   tags: [clickhouse_install]
 
-- name: Deploy ClickHouse user configuration
-  become: true
-  template:
-    src: clickhouse-config.xml.j2
-    dest: "{{ clickhouse_config_path }}/config.xml"
-    owner: clickhouse
-    group: clickhouse
-    mode: "0644"
-  notify: Restart clickhouse-server
-  tags: [clickhouse_install]
+# - name: Deploy ClickHouse user configuration
+#   become: true
+#   template:
+#     src: user.xml.j2
+#     dest: "{{ clickhouse_config_path }}/user.xml"
+#     owner: clickhouse
+#     group: clickhouse
+#     mode: "0644"
+#   notify: "{{ clickhouse_handler_on_config_change }}"
+#   tags: [clickhouse_install]
 
 - name: Ensure ClickHouse data directory exists
   become: true

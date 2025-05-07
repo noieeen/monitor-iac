@@ -9,4 +9,4 @@
     - require-deps
     - clickhouse
     - otel-collector
-    - grafana
+    # - grafana
